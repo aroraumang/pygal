@@ -490,3 +490,18 @@ class Svg(object):
             if serie.stroke_style is not None:
                 css.append(stroke_dict_to_css(serie.stroke_style, serie.index))
         return '\n'.join(css)
+
+
+class SvgNoStyle(Svg):
+    """
+    An SVG class which doesn't add any styling to it's objects
+
+    This can be used in cases where the user wants to add their
+    own css including base css
+    """
+
+    def add_styles(self):
+        """
+        Do not add any styles
+        """
+        pass

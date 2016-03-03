@@ -30,7 +30,7 @@ from pygal.adapters import decimal_to_float, not_zero, positive
 from pygal.config import Config, SerieConfig
 from pygal.serie import Serie
 from pygal.state import State
-from pygal.svg import Svg
+from pygal.svg import Svg, SvgNoStyle
 from pygal.util import compose, ident
 from pygal.view import Box, Margin
 
@@ -177,6 +177,10 @@ class BaseGraph(object):
 
     def setup(self, **kwargs):
         """Set up the transient state prior rendering"""
+        # Use a custom svg class to not append styles in SVG node
+        # if this option is True
+        no_styling = kwargs.get('no_styling', False)
+
         # Keep labels in case of map
         if getattr(self, 'x_labels', None) is not None:
             self.x_labels = list(self.x_labels)
@@ -191,7 +195,7 @@ class BaseGraph(object):
             [rs for rs in self.raw_series if rs[1].get('secondary')],
             len(self.series)) or []
         self.horizontal = getattr(self, 'horizontal', False)
-        self.svg = Svg(self)
+        self.svg = SvgNoStyle(self) if no_styling else Svg(self)
         self._x_labels = None
         self._y_labels = None
         self._x_2nd_labels = None

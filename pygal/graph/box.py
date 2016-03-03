@@ -161,15 +161,17 @@ class Box(Graph):
             width=width,
             class_='subtle-fill reactive tooltip-trigger'), metadata)
 
-        # draw outliers
-        for o in outliers:
-            alter(self.svg.node(
-                parent_node,
-                tag='circle',
-                cx=left_edge + width / 2,
-                cy=self.view.y(o),
-                r=3,
-                class_='subtle-fill reactive tooltip-trigger'), metadata)
+        if self.config.box_mode != "stdev":
+            # Do not draw circles/outliers for box type stdev
+            # draw outliers
+            for o in outliers:
+                alter(self.svg.node(
+                    parent_node,
+                    tag='circle',
+                    cx=left_edge + width / 2,
+                    cy=self.view.y(o),
+                    r=3,
+                    class_='subtle-fill reactive tooltip-trigger'), metadata)
 
         return (left_edge + width / 2, self.view.y(
             sum(quartiles) / len(quartiles)))
