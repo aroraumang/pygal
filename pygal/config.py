@@ -532,6 +532,13 @@ class Config(CommonConfig):
 
     inverse_y_axis = Key(False, bool, "Misc", "Inverse Y axis direction")
 
+    # Legends
+    legend_at_top = Key(
+        False, bool, "Look", "Set to true to position legend at top")
+
+    legend_at_top_columns = Key(
+        None, int, "Look", "Number of legends in a row")
+
 
 class SerieConfig(CommonConfig):
 
