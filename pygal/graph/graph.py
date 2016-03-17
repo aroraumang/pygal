@@ -160,7 +160,7 @@ class Graph(PublicApi):
                     class_='%s%s%sline' % (
                         'axis ' if label == "0" else '',
                         'major ' if major else '',
-                        'guide ' if (position != 0 or isinstance(self, pygal.Line)) and not last_guide else ''))
+                        'guide ' if (position != 0 or (self.config.graph_type == 'Line')) and not last_guide else ''))
             y += .5 * self.style.label_font_size + 5
             text = self.svg.node(
                 guides, 'text',

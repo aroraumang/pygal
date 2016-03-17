@@ -232,6 +232,10 @@ class CommonConfig(BaseConfig):
         "Default to value_formatter in most charts, it depends on dual charts."
         "(Can be overriden by value with the formatter metadata.)")
 
+    graph_type = Key(
+        "Bar", str, "Misc", "Graph Type"
+    )
+
 
 class Config(CommonConfig):
 
