@@ -92,6 +92,13 @@ class Graph(PublicApi):
         self.nodes['title'] = self.svg.node(
             self.nodes['graph'],
             class_="titles")
+
+        if self.show_legend and self.legend_at_top:
+            self.nodes['legends'] = self.svg.node(
+                self.nodes['graph'],
+                class_='legends'
+            )
+
         self.nodes['overlay'] = self.svg.node(
             self.nodes['graph'], class_="plot overlay",
             transform="translate(%d, %d)" % (
@@ -305,7 +312,15 @@ class Graph(PublicApi):
         truncation = self.truncate_legend
         if self.legend_at_top:
             x = self.margin_box.left
-            y = self.margin_box.top
+            y = self.spacing
+
+            _title = split_title(
+                self.title, self.width, self.style.title_font_size)
+
+            if self.title:
+                h, _ = get_text_box(_title[0], self.style.title_font_size)
+                y += len(self._title) * (self.spacing + h)
+
             cols = self.legend_at_top_columns or ceil(
                 sqrt(self._order)) or 1
 
@@ -334,9 +349,13 @@ class Graph(PublicApi):
             if not truncation:
                 truncation = 15
 
-        legends = self.svg.node(
-            self.nodes['graph'], class_='legends',
-            transform='translate(%d, %d)' % (x, y))
+        if not self.legend_at_top:
+            legends = self.svg.node(
+                self.nodes['graph'], class_='legends',
+                transform='translate(%d, %d)' % (x, y))
+        else:
+            legends = self.nodes['legends']
+            legends.attrib['transform'] = 'translate(%d, %d)' % (x, y)
 
         h = max(self.legend_box_size, self.style.legend_font_size)
         x_step = self.view.width / cols
@@ -641,20 +660,21 @@ class Graph(PublicApi):
                          if isinstance(serie.title, dict)
                          else serie.title or '' for serie in series_group]),
                     self.style.legend_font_size)
-                if self.legend_at_top:
-                    h_max = max(h, self.legend_box_size)
-                    cols = (self._order // self.legend_at_top_columns
-                            if self.legend_at_top_columns
-                            else ceil(sqrt(self._order)) or 1)
-                    self.margin_box.top += self.spacing + h_max * round(
-                        cols - 1) * 1.5 + max(h_max, 20)
-                elif self.legend_at_bottom:
+                if self.legend_at_bottom:
                     h_max = max(h, self.legend_box_size)
                     cols = (self._order // self.legend_at_bottom_columns
                             if self.legend_at_bottom_columns
                             else ceil(sqrt(self._order)) or 1)
                     self.margin_box.bottom += self.spacing + h_max * round(
                         cols - 1) * 1.5 + h_max
+
+                elif self.legend_at_top:
+                    h_max = max(h, self.legend_box_size)
+                    cols = (self._order // self.legend_at_top_columns
+                            if self.legend_at_top_columns
+                            else ceil(sqrt(self._order)) or 1)
+                    self.margin_box.top += self.spacing + h_max * round(
+                        cols - 1) * 1.5
                 else:
                     if series_group is self.series:
                         legend_width = self.spacing + w + self.legend_box_size
@@ -733,9 +753,9 @@ class Graph(PublicApi):
         if self.print_values_position == 'top':
             gh = self.height - self.margin_box.y
             alpha = 1.1 * (self.style.value_font_size / gh) * self._box.height
-            if self._max > 0:
+            if self._max and self._max > 0:
                 self._box.ymax += alpha
-            if self._min < 0:
+            if self._min and self._min < 0:
                 self._box.ymin -= alpha
 
     def _confidence_interval(self, node, x, y, value, metadata):
