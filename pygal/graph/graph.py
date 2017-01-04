@@ -29,7 +29,7 @@ from pygal import stats
 from pygal.util import (
     cached_property, compute_scale, cut, decorate,
     get_text_box, get_texts_box, majorize, rad, reverse_text_len,
-    split_title, truncate, filter_kwargs)
+    split_title, truncate, filter_kwargs, text_len)
 from pygal.view import LogView, ReverseView, View, XYLogView
 
 
@@ -358,7 +358,7 @@ class Graph(PublicApi):
             legends.attrib['transform'] = 'translate(%d, %d)' % (x, y)
 
         h = max(self.legend_box_size, self.style.legend_font_size)
-        x_step = self.view.width / cols
+        x_step = 20
         if self.legend_at_bottom:
             secondary_legends = legends  # svg node is the same
         else:
@@ -386,6 +386,7 @@ class Graph(PublicApi):
             if not self.legend_at_bottom and is_secondary:
                 i = 0
 
+            x = 0
             for title in titles:
                 serie_number += 1
                 if title is None:
@@ -393,13 +394,17 @@ class Graph(PublicApi):
                 col = i % cols
                 row = i // cols
 
+                if col == 0:
+                    x = 0
+
                 legend = self.svg.node(
                     secondary_legends if is_secondary else legends,
                     class_='legend reactive activate-serie',
                     id="activate-serie-%d" % serie_number)
+
                 self.svg.node(
                     legend, 'rect',
-                    x=col * x_step,
+                    x=x,
                     y=1.5 * row * h + (
                         self.style.legend_font_size - self.legend_box_size
                         if self.style.legend_font_size > self.legend_box_size
@@ -420,9 +425,11 @@ class Graph(PublicApi):
                 truncated = truncate(title, truncation)
                 self.svg.node(
                     node, 'text',
-                    x=col * x_step + self.legend_box_size + 5,
+                    x=x + self.legend_box_size + 5,
                     y=1.5 * row * h + .5 * h + .3 * self.style.legend_font_size
                 ).text = truncated
+
+                x = x + x_step + text_len(len(title), self.style.legend_font_size)
 
                 if truncated != title:
                     self.svg.node(legend, 'title').text = title
@@ -660,6 +667,7 @@ class Graph(PublicApi):
                          if isinstance(serie.title, dict)
                          else serie.title or '' for serie in series_group]),
                     self.style.legend_font_size)
+
                 if self.legend_at_bottom:
                     h_max = max(h, self.legend_box_size)
                     cols = (self._order // self.legend_at_bottom_columns
@@ -674,7 +682,8 @@ class Graph(PublicApi):
                             if self.legend_at_top_columns
                             else ceil(sqrt(self._order)) or 1)
                     self.margin_box.top += self.spacing + h_max * round(
-                        cols - 1) * 1.5
+                        cols - 1) * 1.5 + (h_max if self.title else 20)
+
                 else:
                     if series_group is self.series:
                         legend_width = self.spacing + w + self.legend_box_size
