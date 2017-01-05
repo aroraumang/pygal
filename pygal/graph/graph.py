@@ -89,6 +89,9 @@ class Graph(PublicApi):
                       x=0, y=0,
                       width=self.view.width,
                       height=self.view.height)
+        self.nodes['sub_title'] = self.svg.node(
+            self.nodes['graph'],
+            class_="subtitle")
         self.nodes['title'] = self.svg.node(
             self.nodes['graph'],
             class_="titles")
@@ -312,7 +315,7 @@ class Graph(PublicApi):
         truncation = self.truncate_legend
         if self.legend_at_top:
             x = self.margin_box.left
-            y = self.spacing
+            y = self.spacing + 40
 
             _title = split_title(
                 self.title, self.width, self.style.title_font_size)
@@ -320,6 +323,13 @@ class Graph(PublicApi):
             if self.title:
                 h, _ = get_text_box(_title[0], self.style.title_font_size)
                 y += len(self._title) * (self.spacing + h)
+
+            _sub_title = split_title(
+                self.sub_title, self.width, self.style.sub_title_font_size)
+
+            if self.sub_title:
+                h, _ = get_text_box(_sub_title[0], self.style.sub_title_font_size)
+                y += len(self._sub_title) * (self.spacing + h)
 
             cols = self.legend_at_top_columns or ceil(
                 sqrt(self._order)) or 1
@@ -438,12 +448,21 @@ class Graph(PublicApi):
 
     def _make_title(self):
         """Make the title"""
+        y = self.spacing + 20
+        if self._sub_title:
+            for i, title_line in enumerate(self._sub_title, 1):
+                y=i * (self.style.sub_title_font_size + self.spacing)
+                self.svg.node(
+                    self.nodes['sub_title'], 'text', class_='sub_title plot_title',
+                    x=self.margin_box.left,
+                    y=y + 20
+                ).text = title_line
         if self._title:
             for i, title_line in enumerate(self._title, 1):
                 self.svg.node(
                     self.nodes['title'], 'text', class_='title plot_title',
-                    x=self.width / 2,
-                    y=i * (self.style.title_font_size + self.spacing)
+                    x=self.margin_box.left,
+                    y=(i * (self.style.title_font_size + self.spacing)) + y + self.spacing
                 ).text = title_line
 
     def _make_x_title(self):
@@ -731,10 +750,16 @@ class Graph(PublicApi):
 
         self._title = split_title(
             self.title, self.width, self.style.title_font_size)
+        self._sub_title = split_title(
+            self.sub_title, self.width, self.style.sub_title_font_size)
 
         if self.title:
             h, _ = get_text_box(self._title[0], self.style.title_font_size)
-            self.margin_box.top += len(self._title) * (self.spacing + h)
+            self.margin_box.top += len(self._title) * (self.spacing + h) + 20
+
+        if self.sub_title:
+            h, _ = get_text_box(self._sub_title[0], self.style.sub_title_font_size)
+            self.margin_box.top += len(self._sub_title) * (self.spacing + h) + 20
 
         self._x_title = split_title(
             self.x_title, self.width - self.margin_box.x,

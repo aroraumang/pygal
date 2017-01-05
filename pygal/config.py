@@ -266,6 +266,11 @@ class Config(CommonConfig):
         None, str, "Look",
         "Graph title.", "Leave it to None to disable title.")
 
+    sub_title = Key(
+        None, str, "Look",
+        "Graph sub title.", "Leave it to None to disable sub title."
+    )
+
     x_title = Key(
         None, str, "Look",
         "Graph X-Axis title.", "Leave it to None to disable X-Axis title.")
