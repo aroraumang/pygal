@@ -315,21 +315,21 @@ class Graph(PublicApi):
         truncation = self.truncate_legend
         if self.legend_at_top:
             x = self.margin_box.left
-            y = self.spacing + 40
+            y = self.spacing
 
             _title = split_title(
                 self.title, self.width, self.style.title_font_size)
 
             if self.title:
                 h, _ = get_text_box(_title[0], self.style.title_font_size)
-                y += len(self._title) * (self.spacing + h)
+                y += len(self._title) * (self.spacing + h) + 20
 
             _sub_title = split_title(
                 self.sub_title, self.width, self.style.sub_title_font_size)
 
             if self.sub_title:
                 h, _ = get_text_box(_sub_title[0], self.style.sub_title_font_size)
-                y += len(self._sub_title) * (self.spacing + h)
+                y += len(self._sub_title) * (self.spacing + h) + 20
 
             cols = self.legend_at_top_columns or ceil(
                 sqrt(self._order)) or 1
