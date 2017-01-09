@@ -97,11 +97,11 @@ class Bar(Graph):
 
         if self.print_values_position == 'top':
             if self.horizontal:
-                x = x_bottom + sign * self.style.value_font_size / 2
+                x = (x_bottom + sign * self.style.value_font_size / 2) + 11
                 y = y_center
             else:
                 x = x_center
-                y = y_bottom - sign * self.style.value_font_size / 2
+                y = (y_bottom - sign * self.style.value_font_size / 2) - 9
         elif self.print_values_position == 'bottom':
             if self.horizontal:
                 x = x_top + sign * self.style.value_font_size / 2
