@@ -280,14 +280,31 @@ class Svg(object):
                 class_='slice reactive tooltip-trigger')
         else:
             rv = None
-        x, y = coord_diff(center, coord_project(
-            (radius + small_radius) / 2, start_angle + angle / 2))
+        co = coord_project(
+            (radius + small_radius), start_angle + angle / 2)
+        x, y = coord_diff(center, co)
+
+        # Hack to properly place slice values
+        if co[0] > 0 and co[1] > 0:
+            x = x - 25 if co[0] > 25 else x - 10
+            y = y - 25
+
+        elif co[0] < 0 and co[1] > 0:
+            x = x + 20
+            y = y - 20
+
+        elif co[0] < 0 and co[1] < 0:
+            x = x + 20
+            y = y + 20
+
+        elif co[0] > 0 and co[1] < 0:
+            x = x - 20
+            y = y + 20
 
         self.graph._tooltip_data(
             node, val, x, y, "centered",
             self.graph._x_labels and self.graph._x_labels[i][0])
-        if angle >= 0.3:  # 0.3 radians is about 17 degrees
-            self.graph._static_value(serie_node, val, x, y, metadata)
+        self.graph._static_value(serie_node, val, x, y, metadata)
         return rv
 
     def gauge_background(
