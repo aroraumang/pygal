@@ -44,7 +44,7 @@ class Bar(Graph):
         else:
             width = min(original_width, 75)
         original_y = y
-        x, y = self.view((x, y or 100))
+        x, y = self.view((x, y or self._max))
 
         series_margin = width * self._series_margin
         if len(self.series) > 1:
