@@ -43,7 +43,8 @@ class Bar(Graph):
             width = max(original_width, -75)
         else:
             width = min(original_width, 75)
-        x, y = self.view((x, y))
+        original_y = y
+        x, y = self.view((x, y or 100))
 
         series_margin = width * self._series_margin
         if len(self.series) > 1:
@@ -72,10 +73,13 @@ class Bar(Graph):
         width -= 2 * serie_margin
         height = self.view.y(zero) - y
         r = serie.rounded_bars * 1 if serie.rounded_bars else 0
+        class_name = 'rect reactive tooltip-trigger'
+        if original_y == 0.0:
+            class_name = 'rect reactive no-bar'
         alter(self.svg.transposable_node(
             parent, 'rect',
             x=x, y=y, rx=r, ry=r, width=width, height=height,
-            class_='rect reactive tooltip-trigger'), serie.metadata.get(i))
+            class_=class_name), serie.metadata.get(i))
         transpose = swap if self.horizontal else ident
         return x, y, width, height
 
@@ -124,7 +128,7 @@ class Bar(Graph):
             points = serie.points
 
         for i, (x, y) in enumerate(points):
-            if None in (x, y) or (self.logarithmic and y <= 0):
+            if (self.logarithmic and y <= 0):
                 continue
             metadata = serie.metadata.get(i)
             val = self._format(serie, i)
@@ -135,15 +139,17 @@ class Bar(Graph):
                 metadata)
 
             x_, y_, width, height = self._bar(
-                serie, bar, x, y, i, self.zero, secondary=rescale)
+                serie, bar, x, (y or 0), i, self.zero, secondary=rescale)
 
-            self._confidence_interval(
-                serie_node['overlay'], x_ + width / 2, y_, serie.values[i],
-                metadata)
+            if y is not None:
 
-            self._tooltip_and_print_values(
-                serie_node, serie, bar, i, val, metadata,
-                x_, y_, width, height)
+                self._confidence_interval(
+                    serie_node['overlay'], x_ + width / 2, y_, serie.values[i],
+                    metadata)
+
+                self._tooltip_and_print_values(
+                    serie_node, serie, bar, i, val, metadata,
+                    x_, y_, width, height)
 
     def _compute(self):
         """Compute y min and max and y scale and set labels"""
