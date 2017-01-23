@@ -353,7 +353,7 @@ class Graph(PublicApi):
                 truncation = reverse_text_len(
                     available_space, self.style.legend_font_size)
         else:
-            x = self.spacing
+            x = self.spacing + 20
             y = self.margin_box.top + self.spacing
             cols = 1
             if not truncation:
@@ -454,14 +454,14 @@ class Graph(PublicApi):
                 y=i * (self.style.sub_title_font_size + self.spacing)
                 self.svg.node(
                     self.nodes['sub_title'], 'text', class_='sub_title plot_title',
-                    x=self.margin_box.left,
+                    x=self.margin_box.left if self.legend_at_top else (self.spacing + 20),
                     y=y + 20
                 ).text = title_line
         if self._title:
             for i, title_line in enumerate(self._title, 1):
                 self.svg.node(
                     self.nodes['title'], 'text', class_='title plot_title',
-                    x=self.margin_box.left,
+                    x=self.margin_box.left if self.legend_at_top else (self.spacing + 20),
                     y=(i * (self.style.title_font_size + self.spacing)) + y + self.spacing
                 ).text = title_line
 
