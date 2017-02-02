@@ -459,11 +459,13 @@ class Graph(PublicApi):
                 ).text = title_line
         if self._title:
             for i, title_line in enumerate(self._title, 1):
-                self.svg.node(
+                title = self.svg.node(
                     self.nodes['title'], 'text', class_='title plot_title',
                     x=self.margin_box.left if self.legend_at_top else (self.spacing + 20),
                     y=(i * (self.style.title_font_size + self.spacing)) + y + self.spacing
-                ).text = title_line
+                )
+                title.text = title_line
+                title.attrib['font-weight'] = 'bold'
 
     def _make_x_title(self):
         """Make the X-Axis title"""
