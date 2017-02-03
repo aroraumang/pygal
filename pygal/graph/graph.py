@@ -433,11 +433,13 @@ class Graph(PublicApi):
                     node = legend
 
                 truncated = truncate(title, truncation)
-                self.svg.node(
+                legend_text = self.svg.node(
                     node, 'text',
                     x=x + self.legend_box_size + 5,
                     y=1.5 * row * h + .5 * h + .3 * self.style.legend_font_size
-                ).text = truncated
+                )
+                legend_text.text = truncated
+                legend_text.attrib['font-weight'] = 'bold'
 
                 x = x + x_step + text_len(len(title), self.style.legend_font_size)
 
@@ -563,7 +565,10 @@ class Graph(PublicApi):
                 class_=' '.join(val_cls),
                 x=x,
                 y=y + self.style.value_font_size / 3,
-                attrib={'text-anchor': align_text}
+                attrib={
+                    'text-anchor': align_text,
+                    'font-weight': 'bold'
+                }
             ).text = value if self.print_zeroes or value != '0' else ''
 
     def _points(self, x_pos):
