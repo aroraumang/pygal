@@ -353,7 +353,7 @@ class Graph(PublicApi):
                 truncation = reverse_text_len(
                     available_space, self.style.legend_font_size)
         else:
-            x = self.spacing + 20
+            x = self.spacing + 60
             y = self.margin_box.top + self.spacing
             cols = 1
             if not truncation:
