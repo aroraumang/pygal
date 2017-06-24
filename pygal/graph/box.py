@@ -135,7 +135,7 @@ class Box(Graph):
                 coords=[(xs, self.view.y(whisker)),
                         (xe, self.view.y(whisker))],
                 class_='reactive tooltip-trigger',
-                attrib={'stroke-width': 3}), metadata)
+                attrib={'stroke-width': 2}), metadata)
 
         # draw lines connecting whiskers to box (Q1 and Q3)
         alter(self.svg.line(
@@ -143,13 +143,13 @@ class Box(Graph):
             coords=[(left_edge + width / 2, self.view.y(quartiles[0])),
                     (left_edge + width / 2, self.view.y(quartiles[1]))],
             class_='reactive tooltip-trigger',
-            attrib={'stroke-width': 2}), metadata)
+            attrib={'stroke-width': 1}), metadata)
         alter(self.svg.line(
             parent_node,
             coords=[(left_edge + width / 2, self.view.y(quartiles[4])),
                     (left_edge + width / 2, self.view.y(quartiles[3]))],
             class_='reactive tooltip-trigger',
-            attrib={'stroke-width': 2}), metadata)
+            attrib={'stroke-width': 1}), metadata)
 
         # box, bounded by Q1 and Q3
         alter(self.svg.node(
