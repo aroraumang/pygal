@@ -40,9 +40,9 @@ class Bar(Graph):
         original_width = (self.view.x(1) - self.view.x(0)) / self._len
         # 75 must be the max width
         if self.horizontal:
-            width = max(original_width, -75)
+            width = max(original_width, -50)
         else:
-            width = min(original_width, 75)
+            width = min(original_width, 50)
         original_y = y
         x, y = self.view((x, y or self._max))
 
@@ -53,12 +53,12 @@ class Bar(Graph):
 
         x += series_margin
 
-        if (original_width != width) and (width in [75, -75]):
+        if (original_width != width) and (width in [50, -50]):
             # Position bar correctly if width is decreased to 75
             if self.horizontal:
-                x += (original_width / 2) + 37.5
+                x += (original_width / 2) + 25
             else:
-                x += (original_width / 2) - 37.5
+                x += (original_width / 2) - 25
 
         width -= 2 * series_margin
         width /= self._order
