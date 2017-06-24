@@ -420,6 +420,8 @@ class Graph(PublicApi):
                         if self.style.legend_font_size > self.legend_box_size
                         else 0
                     ) / 2,
+                    rx=3,
+                    ry=3,
                     width=self.legend_box_size,
                     height=self.legend_box_size,
                     class_="color-%d reactive" % (
