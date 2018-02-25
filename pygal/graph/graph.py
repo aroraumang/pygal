@@ -562,7 +562,8 @@ class Graph(PublicApi):
             if self.dynamic_print_values:
                 val_cls.append('showable')
 
-            self.svg.node(
+            value = value if self.print_zeroes or value != '0' else ''
+            node = self.svg.node(
                 serie_node['text_overlay'], 'text',
                 class_=' '.join(val_cls),
                 x=x,
@@ -571,7 +572,21 @@ class Graph(PublicApi):
                     'text-anchor': align_text,
                     'font-weight': 'bold'
                 }
-            ).text = value if self.print_zeroes or value != '0' else ''
+            )
+            if len(value.split('\n')) > 1:
+                _y = y + self.style.value_font_size / 3
+                for text in value.split('\n'):
+                    self.svg.node(
+                        node, 'tspan',
+                        x=x,
+                        y=_y,
+                        attrib={
+                            'font-weight': 'bold'
+                        }
+                    ).text = text
+                    _y += self.style.value_font_size
+            else:
+                node.text = value
 
     def _points(self, x_pos):
         """
