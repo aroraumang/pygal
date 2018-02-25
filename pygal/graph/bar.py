@@ -37,8 +37,9 @@ class Bar(Graph):
 
     def _bar(self, serie, parent, x, y, i, zero, secondary=False):
         """Internal bar drawing function"""
-        original_width = (self.view.x(1) - self.view.x(0)) / self._len
-        # 75 must be the max width
+        length = max(self._len, 10)
+        original_width = (self.view.x(1) - self.view.x(0)) / length
+        # 50 must be the max width
         if self.horizontal:
             width = max(original_width, -50)
         else:
@@ -54,7 +55,7 @@ class Bar(Graph):
         x += series_margin
 
         if (original_width != width) and (width in [50, -50]):
-            # Position bar correctly if width is decreased to 75
+            # Position bar correctly if width is decreased to 50
             if self.horizontal:
                 x += (original_width / 2) + 25
             else:
@@ -157,13 +158,14 @@ class Bar(Graph):
             self._box.ymin = min(self._min, self.zero)
         if self._max:
             self._box.ymax = max(self._max, self.zero)
+        length = max(self._len, 10)
         self._x_pos = [
-            x / self._len for x in range(self._len + 1)
+            x / length for x in range(self._len + 1)
         ] if self._len > 1 else [0, 1]  # Center if only one value
 
         self._points(self._x_pos)
 
-        self._x_pos = [(i + .5) / self._len for i in range(self._len)]
+        self._x_pos = [(i + .5) / length for i in range(self._len)]
 
     def _plot(self):
         """Draw bars for series and secondary series"""

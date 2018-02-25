@@ -75,8 +75,9 @@ class StackedBar(Bar):
         positive_vals = positive_vals or [self.zero]
         negative_vals = negative_vals or [self.zero]
 
+        length = max(self._len, 10)
         self._x_pos = [
-            x / self._len for x in range(self._len + 1)
+            x / length for x in range(self._len + 1)
         ] if self._len > 1 else [0, 1]  # Center if only one value
 
         self._points(self._x_pos)
@@ -92,7 +93,7 @@ class StackedBar(Bar):
             self.secondary_positive_cumulation = [0] * self._len
             self._pre_compute_secondary(positive_vals, negative_vals)
 
-        self._x_pos = [(i + .5) / self._len for i in range(self._len)]
+        self._x_pos = [(i + .5) / length for i in range(self._len)]
 
     def _pre_compute_secondary(self, positive_vals, negative_vals):
         """Compute secondary y min and max"""
@@ -118,8 +119,9 @@ class StackedBar(Bar):
             y -= self.zero
         y += zero
 
-        original_width = (self.view.x(1) - self.view.x(0)) / self._len
-        # 75 must be the max width
+        length = max(self._len, 10)
+        original_width = (self.view.x(1) - self.view.x(0)) / length
+        # 50 must be the max width
         width = min(original_width, 50)
 
         x, y = self.view((x, y))
