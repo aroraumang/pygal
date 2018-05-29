@@ -118,10 +118,7 @@ class StackedBar(Bar):
             y -= self.zero
         y += zero
 
-        original_width = (self.view.x(1) - self.view.x(0)) / self._len
-        # 75 must be the max width
-        width = min(original_width, 50)
-
+        width = (self.view.x(1) - self.view.x(0)) / self._len
         x, y = self.view((x, y))
         y = y or 0
         series_margin = width * self._series_margin
@@ -131,11 +128,6 @@ class StackedBar(Bar):
             series_margin = max(series_margin, 4)
 
         x += series_margin
-
-        if (original_width != width) and (width in [50, -50]):
-            # Position bar correctly if width is decreased to 75
-            x += (original_width / 2) - 25
-
         width -= 2 * series_margin
         if self.secondary_series:
             width /= 2

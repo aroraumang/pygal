@@ -37,29 +37,15 @@ class Bar(Graph):
 
     def _bar(self, serie, parent, x, y, i, zero, secondary=False):
         """Internal bar drawing function"""
-        original_width = (self.view.x(1) - self.view.x(0)) / self._len
-        # 75 must be the max width
-        if self.horizontal:
-            width = max(original_width, -75)
-        else:
-            width = min(original_width, 75)
+        width = (self.view.x(1) - self.view.x(0)) / self._len
         original_y = y
         x, y = self.view((x, y or self._max))
-
         series_margin = width * self._series_margin
         if len(self.series) > 1:
             # Bars in multi series graphs must be separated by atleast 4
             series_margin = max(series_margin, 4)
 
         x += series_margin
-
-        if (original_width != width) and (width in [75, -75]):
-            # Position bar correctly if width is decreased to 75
-            if self.horizontal:
-                x += (original_width / 2) + 37.5
-            else:
-                x += (original_width / 2) - 37.5
-
         width -= 2 * series_margin
         width /= self._order
         if self.horizontal:
