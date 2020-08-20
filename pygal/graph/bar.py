@@ -62,6 +62,8 @@ class Bar(Graph):
         class_name = 'rect reactive tooltip-trigger'
         if original_y == 0.0:
             class_name = 'rect reactive no-bar'
+            if self._get_x_label(i) == "":
+                class_name += " fake-bar"
         alter(self.svg.transposable_node(
             parent, 'rect',
             x=x, y=y, rx=r, ry=r, width=width, height=height,
